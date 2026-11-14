@@ -71,18 +71,24 @@ experience:
       neural networks and sampling strategies for underrepresented age groups, finding
       that oversampling performed best.
 
-# Projects ────────────────────────────────────────────────────
-projects:
+# Featured projects — shown as large cards under the hero ─────
+featured:
   - name: Mash
     lang: Rust
+    tagline: Searchable memory for coding agents.
     url: https://getmash.io
-    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with TLA+ models.
+    site: getmash.io
+    desc: A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with TLA+ models.
 
   - name: gohawk
     lang: Go
+    tagline: Static analyzer for Go concurrency and resource bugs.
     url: https://gohawk.dev
-    desc: Static analyzer for Go concurrency and resource bugs. SSA-based, with compositional function summaries; analyzes all of Kubernetes in 76 seconds and has found bugs fixed upstream in Docker, Kubernetes, and Caddy.
+    site: gohawk.dev
+    desc: SSA-based, with compositional function summaries. Analyzes all of Kubernetes in 76 seconds and has found bugs fixed upstream in Docker, Kubernetes, and Caddy.
 
+# Other projects ──────────────────────────────────────────────
+projects:
   - name: chess-bot
     lang: C#
     url: https://github.com/jamesqo/chess-bot

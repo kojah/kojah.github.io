@@ -168,6 +168,58 @@
   .btn.primary:hover { background: #fff; border-color: #fff; }
   .btn svg { width: 14px; height: 14px; }
 
+  /* Featured projects */
+  .featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .featured:empty { display: none; }
+  .feature {
+    display: flex; flex-direction: column;
+    padding: 30px 30px 26px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  }
+  .featured .feature { margin-top: 0; }
+  .feature:hover {
+    border-color: var(--card-edge-strong);
+    background: rgba(14, 18, 26, 0.66);
+    transform: translateY(-2px);
+  }
+  .feature .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 12px;
+  }
+  .feature h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .feature .tagline { font-size: 16px; margin: 0 0 10px; text-wrap: pretty; }
+  .feature .desc { font-size: 14px; color: var(--ink-dim); margin: 0 0 22px; text-wrap: pretty; }
+  .feature .site {
+    margin-top: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .feature .site span {
+    border-bottom: 1px solid rgba(159, 217, 232, 0.3);
+    transition: border-color 0.18s;
+  }
+  .feature:hover .site span { border-color: var(--accent); }
+
   .about p {
     margin: 0;
     font-size: 16px;
@@ -350,6 +402,8 @@
     main { padding: 100px 18px 60px; }
     .card { padding: 24px 22px; border-radius: 14px; }
     .hero { padding: 32px 22px 28px; }
+    .featured { grid-template-columns: 1fr; }
+    .feature { padding: 26px 22px 22px; }
     .skills-grid { grid-template-columns: 1fr; gap: 4px 0; }
     .skills-grid .group { padding-top: 16px; }
     .skills-grid .group:first-of-type { padding-top: 0; }
@@ -407,15 +461,11 @@
     </div>
   </section>
 
+  <div class="featured reveal" id="projects"></div>
+
   <section class="card about reveal">
     <p class="section-label">About</p>
     <div id="about-body"></div>
-  </section>
-
-  <section class="card reveal" id="projects">
-    <p class="section-label">Selected projects</p>
-    <div class="proj-list" id="projects-body"></div>
-    <p class="more"><a id="github-more" href="#" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
   </section>
 
   <section class="card reveal">
@@ -427,6 +477,12 @@
     <p class="section-label">Selected experience</p>
     <div id="experience-body"></div>
     <p class="more"><a id="linkedin-more" href="#" target="_blank" rel="noopener">Full history on LinkedIn ↗</a></p>
+  </section>
+
+  <section class="card reveal" id="more-projects" hidden>
+    <p class="section-label">Other projects</p>
+    <div class="proj-list" id="projects-body"></div>
+    <p class="more"><a id="github-more" href="#" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
   </section>
 
   <section class="card reveal" id="education" hidden>
@@ -587,6 +643,17 @@ function render(c){
   `).join('');
   $('#linkedin-more').href = c.linkedinUrl || '#';
 
+  // Featured projects
+  $('#projects').innerHTML = (c.featured || []).map(p => `
+    <a class="card feature" href="${escape(p.url)}" target="_blank" rel="noopener">
+      <p class="kicker">${escape(p.lang || '')}</p>
+      <h2>${escape(p.name)}</h2>
+      <p class="tagline">${escape(p.tagline || '')}</p>
+      <p class="desc">${escape(p.desc || '')}</p>
+      <p class="site"><span>${escape(p.site || p.url)}</span> ↗</p>
+    </a>
+  `).join('');
+
   // Projects
   $('#projects-body').innerHTML = (c.projects || []).map(p => `
     <a class="proj" href="${escape(p.url)}" target="_blank" rel="noopener">
@@ -599,6 +666,7 @@ function render(c){
     </a>
   `).join('');
   $('#github-more').href = c.githubUrl || '#';
+  $('#more-projects').hidden = !(c.projects || []).length;
 
   // Education
   $('#education-body').innerHTML = (c.education || []).map(e => `
