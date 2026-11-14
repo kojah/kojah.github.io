@@ -5,36 +5,40 @@
 
 # Page title (browser tab) and SEO description
 pageTitle: James Ko — Software Engineer
-pageDescription: AI-focused software engineer based in New York, NY.
+pageDescription: Software engineer in New York building agent infrastructure, search and static analysis.
 
 # Hero ────────────────────────────────────────────────────────
 name: James Ko
-headline: AI-focused software engineer with a passion for system design and DevOps.
+headline: Software engineer building infrastructure for AI agents, search systems, and static analysis.
 location: New York, NY
 email: jamesqko@gmail.com
 
 # Links ───────────────────────────────────────────────────────
 resumeUrl:   "https://raw.githubusercontent.com/kojah/resume/master/resume.pdf"
 linkedinUrl: https://www.linkedin.com/in/jameslko
-githubUrl:   https://github.com/jamesqo
+githubUrl:   https://github.com/kojah
 
 # About — one entry per paragraph ─────────────────────────────
 about:
-  - I architect cloud-native systems that integrate LLMs and agentic AI into production — specializing in distributed infrastructure, system design, and real-time inference pipelines.
-  - I care about systems that are observable, predictable, and pleasant to operate.
-    Most of my work lately has been in Python, Go, and TypeScript on top of
-    Kubernetes and the major clouds.
+  - I build the systems around AI agents — memory, retrieval, and the infrastructure
+    that runs them. Lately that means Mash, a searchable memory for coding agents,
+    and gohawk, a static analyzer for Go concurrency and resource bugs.
+  - At Memorial Sloan Kettering I work on cBioPortal's data platform. I care about
+    systems that are observable, predictable, and verified. Most of my work lately
+    has been in Rust, Go, Python, and TypeScript on top of Kubernetes and AWS.
 
 # Skills ──────────────────────────────────────────────────────
 skills:
-  - group: AI / ML
-    items: [PyTorch, Scikit-Learn, TensorFlow, Pandas/NumPy, Skyvern, OpenRouter, Playwright]
-  - group: Backend
-    items: [Python, TypeScript, JavaScript, SQL, FastAPI, ClickHouse, BigQuery, Airflow, Prefect, SQLite, MySQL, Databricks, CouchDB]
-  - group: Frontend
-    items: [React, Svelte 5, Vite]
-  - group: Infra / DevOps
-    items: [Kubernetes, Docker, AWS, GCP, ArgoCD, GitHub Actions, OpenTelemetry, Jaeger, nginx]
+  - group: Languages
+    items: [Rust, Go, Python, TypeScript, Swift, "C#", SQL]
+  - group: AI Agents & Retrieval
+    items: [Agent workflows, Containerized agents, Hermes Agent, Semantic embeddings, Hybrid retrieval, Cross-encoder reranking, Qdrant]
+  - group: Systems & Data
+    items: [Distributed systems, Tokio/Axum, gRPC/Protobuf, SQLite, ClickHouse, BigQuery, Airflow]
+  - group: Infrastructure
+    items: [Kubernetes, Karpenter, Docker, ArgoCD, Ansible, AWS]
+  - group: Analysis & Verification
+    items: [SSA-based static analysis, TLA+/PlusCal, Property-based testing]
 
 # Experience ──────────────────────────────────────────────────
 experience:
@@ -42,45 +46,54 @@ experience:
     title: Bioinformatics Engineer
     org: Memorial Sloan Kettering
     summary: >
-      Migrated cBioPortal from MySQL to ClickHouse, cutting query times and RDS costs.
-      Built blue-green deployments, moved storage to S3/Databricks, and shifted imports
-      from Cron to Airflow. Engineered BigQuery-to-cBioPortal ETL pipelines for the
-      National Cancer Institute. Managed Kubernetes via ArgoCD and designed HIPAA-compliant
-      API proxies.
+      Migrated cBioPortal from MySQL to ClickHouse with blue-green deployments that
+      keep the site available during imports. Built a Go microservice that streams
+      study data from the NCI Secure Data Enclave. Moved imports from Cron to Airflow
+      on Docker and Kubernetes, managed through ArgoCD, and storage to S3 and
+      Databricks. Engineered BigQuery ETL pipelines for the National Cancer Institute.
+      Run Hermes Agent, a persistent AI assistant with Slack, Discord, and Telegram
+      gateways, on Kubernetes with Karpenter and EC2 Spot.
 
   - when: Oct 2022 — Jun 2023
     title: Software Engineer
     org: Massachusetts General Hospital
     summary: >
-      Managed clinical and imaging data ingestion for biomarker studies (DISCOVERY,
-      MarkVCID). Used CouchDB for storage and Cron for automation. Enhanced data
-      integrity checks, generated enrollment reports, and anonymized data for
-      HIPAA-compliant distribution.
+      Managed clinical and imaging data ingestion for DISCOVERY and MarkVCID, studies
+      of biomarkers for cognitive impairment and dementia. Strengthened MRI validation
+      before quality control and anonymized clinical form data for distribution to
+      outside researchers.
 
   - when: May 2021 — May 2022
     title: Research Intern
     org: Boston Children's Hospital
     summary: >
-      Built PyTorch models for Harvard Medical School to predict neurological biomarkers
-      (Alzheimer's, schizophrenia). Ran CNN experiments to address data imbalance.
-      Co-authored a paper submitted to NeuroImage.
+      Built a PyTorch model to predict neurological biomarkers. Evaluated convolutional
+      neural networks and sampling strategies for underrepresented age groups, finding
+      that oversampling performed best.
 
 # Projects ────────────────────────────────────────────────────
 projects:
-  - name: Hermes Agent
-    lang: Python
-    url: https://github.com/jamesqo
-    desc: Persistent AI assistant with multi-platform gateway (Discord, Telegram), cloud browser execution, workflow orchestration, and 15+ cron-scheduled autonomous agents.
+  - name: Mash
+    lang: Rust
+    url: https://getmash.io
+    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with TLA+ models.
 
-  - name: El Dorado
-    lang: Python · Svelte
-    url: https://github.com/jamesqo
-    desc: Autonomous job application pipeline using multi-agent LLM orchestration, self-healing diagnostics via GitHub Actions, and a FastAPI + Svelte 5 dashboard.
+  - name: gohawk
+    lang: Go
+    url: https://gohawk.dev
+    desc: Static analyzer for Go concurrency and resource bugs. SSA-based, with compositional function summaries; analyzes all of Kubernetes in 76 seconds and has found bugs fixed upstream in Docker, Kubernetes, and Caddy.
 
   - name: chess-bot
     lang: C#
     url: https://github.com/jamesqo/chess-bot
     desc: UCI-compliant chess engine featuring MTD-f search, iterative deepening, magic bitboards, transposition tables, and quiescence search.
+
+# Education ───────────────────────────────────────────────────
+education:
+  - when: Sep 2018 — May 2022
+    school: University of Massachusetts Amherst
+    degree: Bachelor of Science, Computer Science and Mathematics
+    note: Commonwealth Honors College
 
 # Talks & writing ─────────────────────────────────────────────
 talks:

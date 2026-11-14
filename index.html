@@ -312,6 +312,7 @@
   .reveal:nth-of-type(4) { animation-delay: 0.24s; }
   .reveal:nth-of-type(5) { animation-delay: 0.32s; }
   .reveal:nth-of-type(6) { animation-delay: 0.40s; }
+  .reveal:nth-of-type(7) { animation-delay: 0.48s; }
   @keyframes reveal {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0);    }
@@ -426,6 +427,11 @@
     <p class="section-label">Selected projects</p>
     <div class="proj-list" id="projects-body"></div>
     <p class="more"><a id="github-more" href="#" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
+  </section>
+
+  <section class="card reveal" id="education" hidden>
+    <p class="section-label">Education</p>
+    <div id="education-body"></div>
   </section>
 
   <section class="card reveal" id="talks">
@@ -593,6 +599,19 @@ function render(c){
     </a>
   `).join('');
   $('#github-more').href = c.githubUrl || '#';
+
+  // Education
+  $('#education-body').innerHTML = (c.education || []).map(e => `
+    <div class="role">
+      <div class="when">${escape(e.when)}</div>
+      <div>
+        <p class="title">${escape(e.school)}</p>
+        <p class="org">${escape(e.degree || '')}</p>
+        <p class="summary">${escape(e.note || '')}</p>
+      </div>
+    </div>
+  `).join('');
+  $('#education').hidden = !(c.education || []).length;
 
   // Talks
   $('#talks-body').innerHTML = (c.talks || []).map(t => `
