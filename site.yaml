@@ -83,10 +83,6 @@ projects:
     url: https://gohawk.dev
     desc: Static analyzer for Go concurrency and resource bugs. SSA-based, with compositional function summaries; analyzes all of Kubernetes in 76 seconds and has found bugs fixed upstream in Docker, Kubernetes, and Caddy.
 
-  - name: chess-bot
-    lang: C#
-    url: https://github.com/jamesqo/chess-bot
-    desc: UCI-compliant chess engine featuring MTD-f search, iterative deepening, magic bitboards, transposition tables, and quiescence search.
 
 # Education ───────────────────────────────────────────────────
 education:
