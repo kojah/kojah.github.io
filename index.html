@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loading…</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  :root {
+    --ink: #ecedf1;
+    --ink-dim: rgba(236, 237, 241, 0.66);
+    --ink-faint: rgba(236, 237, 241, 0.36);
+    --ink-trace: rgba(236, 237, 241, 0.14);
+    --card: rgba(10, 12, 18, 0.58);
+    --card-edge: rgba(236, 237, 241, 0.10);
+    --card-edge-strong: rgba(236, 237, 241, 0.22);
+    --accent: #9fd9e8;
+    --max: 720px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #050507;
+    color: var(--ink);
+    font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { min-height: 100vh; }
+
+  canvas#gl {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
+    display: block;
+    z-index: 0;
+  }
+  .veil {
+    position: fixed; inset: 0; z-index: 1;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 70%),
+      linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+  }
+
+  /* Top bar — just the quick-link row, right-aligned */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 10;
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 18px 28px;
+    pointer-events: none;
+  }
+  .nav .quick {
+    display: flex; gap: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    pointer-events: auto;
+  }
+  .nav .quick a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    transition: color 0.18s;
+  }
+  .nav .quick a:hover { color: var(--ink); }
+
+  main {
+    position: relative;
+    z-index: 5;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 120px 28px 80px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: 16px;
+    padding: 32px 36px;
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 20px 60px -20px rgba(0,0,0,0.55);
+  }
+  .card + .card { margin-top: 20px; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+
+  /* Hero */
+  .hero { padding: 44px 40px 40px; }
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+  }
+  .hero .headline {
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 28px;
+    max-width: 540px;
+    text-wrap: pretty;
+  }
+  .hero .meta {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+  .hero .meta .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--ink-faint);
+    display: inline-block;
+  }
+  .hero .meta a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink-trace);
+    transition: color 0.18s, border-color 0.18s;
+  }
+  .hero .meta a:hover { color: var(--ink); border-color: var(--ink); }
+
+  .cta-row {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 28px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 11px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--card-edge-strong);
+    background: rgba(236, 237, 241, 0.04);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background 0.18s, border-color 0.18s, transform 0.18s;
+  }
+  .btn:hover {
+    background: rgba(236, 237, 241, 0.10);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .btn.primary {
+    background: var(--ink);
+    color: #0a0c12;
+    border-color: var(--ink);
+  }
+  .btn.primary:hover { background: #fff; border-color: #fff; }
+  .btn svg { width: 14px; height: 14px; }
+
+  .about p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .about p + p { margin-top: 14px; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 14px 24px;
+    align-items: baseline;
+  }
+  .skills-grid .group {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-top: 4px;
+  }
+  .skills-grid .list {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .chip {
+    display: inline-block;
+    padding: 5px 11px;
+    border: 1px solid var(--card-edge);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink);
+    background: rgba(236, 237, 241, 0.025);
+  }
+
+  .role {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--card-edge);
+  }
+  .role:first-of-type { border-top: 0; padding-top: 0; }
+  .role .when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    color: var(--ink-faint);
+    padding-top: 3px;
+  }
+  .role .title {
+    font-size: 15px; font-weight: 500;
+    margin: 0 0 2px; color: var(--ink);
+  }
+  .role .org   { font-size: 13px; color: var(--ink-dim); margin: 0 0 6px; }
+  .role .summary {
+    font-size: 14px; color: var(--ink-dim); margin: 0;
+    text-wrap: pretty;
+  }
+
+  .more {
+    margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .more a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(159, 217, 232, 0.3);
+    transition: border-color 0.18s;
+  }
+  .more a:hover { border-color: var(--accent); }
+
+  .proj-list { display: grid; gap: 2px; }
+  .proj {
+    display: block;
+    padding: 18px 4px;
+    border-top: 1px solid var(--card-edge);
+    text-decoration: none;
+    color: var(--ink);
+    transition: padding 0.2s, background 0.2s;
+    border-radius: 6px;
+  }
+  .proj:first-child { border-top: 0; }
+  .proj:hover { padding-left: 12px; background: rgba(236, 237, 241, 0.025); }
+  .proj .row {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 4px;
+  }
+  .proj .name { font-size: 15px; font-weight: 500; }
+  .proj .lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+  .proj .arrow {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-faint);
+    transition: transform 0.2s, color 0.2s;
+  }
+  .proj:hover .arrow { color: var(--ink); transform: translateX(3px); }
+  .proj .desc { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+  .talk {
+    display: flex; align-items: baseline; gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--card-edge);
+    text-decoration: none;
+    color: var(--ink);
+    transition: padding 0.2s, background 0.2s;
+    border-radius: 6px;
+  }
+  .talk:first-of-type { border-top: 0; }
+  .talk:hover { padding-left: 12px; background: rgba(236, 237, 241, 0.025); }
+  .talk .when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.06em; min-width: 78px;
+  }
+  .talk .title { font-size: 15px; flex: 1; }
+  .talk .venue { font-size: 13px; color: var(--ink-dim); font-style: italic; }
+
+  footer {
+    margin-top: 40px;
+    padding: 24px 4px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .reveal {
+    animation: reveal 0.6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .reveal:nth-of-type(2) { animation-delay: 0.08s; }
+  .reveal:nth-of-type(3) { animation-delay: 0.16s; }
+  .reveal:nth-of-type(4) { animation-delay: 0.24s; }
+  .reveal:nth-of-type(5) { animation-delay: 0.32s; }
+  .reveal:nth-of-type(6) { animation-delay: 0.40s; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { animation: none; }
+  }
+
+  /* Error message if config can't load */
+  .config-error {
+    position: relative; z-index: 6;
+    max-width: 600px;
+    margin: 120px auto 0;
+    padding: 24px;
+    border: 1px solid #b94c4c;
+    border-radius: 12px;
+    background: rgba(40, 12, 12, 0.75);
+    color: #fcdede;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .config-error h2 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .config-error code {
+    background: rgba(255,255,255,0.08);
+    padding: 1px 6px; border-radius: 4px;
+  }
+
+  @media (max-width: 640px) {
+    main { padding: 100px 18px 60px; }
+    .card { padding: 24px 22px; border-radius: 14px; }
+    .hero { padding: 32px 22px 28px; }
+    .skills-grid { grid-template-columns: 1fr; gap: 4px 0; }
+    .skills-grid .group { padding-top: 16px; }
+    .skills-grid .group:first-of-type { padding-top: 0; }
+    .role { grid-template-columns: 1fr; gap: 8px; }
+    .nav { padding: 14px 18px; }
+    .nav .quick { gap: 14px; font-size: 10px; }
+    .talk { flex-wrap: wrap; gap: 4px 12px; }
+    .talk .when { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="gl"></canvas>
+<div class="veil"></div>
+
+<nav class="nav">
+  <div class="quick">
+    <a href="#work">Work</a>
+    <a href="#projects">Projects</a>
+    <a href="#talks">Talks</a>
+    <a id="nav-resume" href="#" download>Resume</a>
+  </div>
+</nav>
+
+<main id="top" hidden>
+
+  <section class="card hero reveal">
+    <h1 id="hero-name"></h1>
+    <p class="headline" id="hero-headline"></p>
+    <div class="meta">
+      <span id="hero-location"></span>
+      <span class="dot"></span>
+      <a id="hero-email" href="#"></a>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" id="cta-resume" href="#" download>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 2v9M8 11l-3-3M8 11l3-3M3 14h10" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download résumé
+      </a>
+      <a class="btn" id="cta-linkedin" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M3.5 2.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM2 6.5h3v7.5H2v-7.5zm4.5 0h2.8v1.05h.04c.39-.74 1.34-1.52 2.76-1.52 2.95 0 3.5 1.94 3.5 4.47V14h-3v-3.5c0-.83-.01-1.91-1.16-1.91-1.16 0-1.34.91-1.34 1.85V14H6.5V6.5z"/>
+        </svg>
+        LinkedIn
+      </a>
+      <a class="btn" id="cta-github" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.35-2.22.48-2.69-1.07-2.69-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.88 2.34.67.07-.52.28-.88.51-1.08-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27 7.7 7.7 0 0 1 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.11.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.74.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </section>
+
+  <section class="card about reveal">
+    <p class="section-label">About</p>
+    <div id="about-body"></div>
+  </section>
+
+  <section class="card reveal">
+    <p class="section-label">Skills</p>
+    <div class="skills-grid" id="skills-grid"></div>
+  </section>
+
+  <section class="card reveal" id="work">
+    <p class="section-label">Selected experience</p>
+    <div id="experience-body"></div>
+    <p class="more"><a id="linkedin-more" href="#" target="_blank" rel="noopener">Full history on LinkedIn ↗</a></p>
+  </section>
+
+  <section class="card reveal" id="projects">
+    <p class="section-label">Selected projects</p>
+    <div class="proj-list" id="projects-body"></div>
+    <p class="more"><a id="github-more" href="#" target="_blank" rel="noopener">All repositories on GitHub ↗</a></p>
+  </section>
+
+  <section class="card reveal" id="talks">
+    <p class="section-label">Talks &amp; writing</p>
+    <div id="talks-body"></div>
+  </section>
+
+  <footer>
+    <span id="footer-left"></span>
+    <span id="footer-right"></span>
+  </footer>
+</main>
+
+<div id="config-error" class="config-error" hidden></div>
+
+<!-- ─── Voronoi shader ─── -->
+<script id="vs" type="x-shader/x-vertex">
+attribute vec2 a_pos;
+void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+</script>
+
+<script id="fs" type="x-shader/x-fragment">
+precision highp float;
+uniform vec2  u_res;
+uniform float u_time;
+uniform vec2  u_mouse;
+uniform vec3  u_clicks[8];
+
+float hash21(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+vec2  hash22(vec2 p){
+  p = vec2(dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));
+  return fract(sin(p)*43758.5453);
+}
+
+void main(){
+  vec2 p = (gl_FragCoord.xy*2.0 - u_res) / u_res.y;
+  vec2 m = u_mouse*2.0 - 1.0; m.x *= u_res.x/u_res.y;
+
+  float scale = 4.5;
+  vec2 q = p * scale;
+  vec2 ip = floor(q);
+  vec2 fp = fract(q);
+
+  float d1 = 8.0, d2 = 8.0;
+  vec2  closestId = vec2(0.0);
+
+  float clickEnergy = 0.0;
+  for(int k=0;k<8;k++){
+    vec3 c = u_clicks[k];
+    if(c.z < 0.0) continue;
+    vec2 cp = c.xy*2.0 - 1.0; cp.x *= u_res.x/u_res.y;
+    float age = u_time - c.z;
+    float dist = length(p - cp);
+    clickEnergy += smoothstep(0.10, 0.0, abs(dist - age*0.9)) * exp(-age*0.9);
+  }
+
+  for(int y=-1;y<=1;y++){
+    for(int x=-1;x<=1;x++){
+      vec2 g = vec2(float(x), float(y));
+      vec2 cellId = ip + g;
+      vec2 base = hash22(cellId);
+      vec2 o = base + 0.15 * vec2(sin(u_time*0.5 + base.x*6.2831),
+                                  cos(u_time*0.4 + base.y*6.2831));
+      vec2 r = g + o - fp;
+      float dd = dot(r,r);
+      if(dd < d1){ d2 = d1; d1 = dd; closestId = cellId; }
+      else if(dd < d2){ d2 = dd; }
+    }
+  }
+  float edge = sqrt(d2) - sqrt(d1);
+
+  vec2 stableCenter = closestId + hash22(closestId);
+  vec2 cellWorld = stableCenter / scale;
+  float mDist = length(cellWorld - m);
+  float mInf  = exp(-mDist*1.1);
+
+  float dStable = length(q - stableCenter);
+
+  float hueSeed = hash21(closestId);
+  vec3 cellTint = mix(vec3(0.05,0.55,0.65), vec3(0.20,0.30,0.85), hueSeed);
+  cellTint = mix(cellTint, vec3(0.55,0.95,0.85), pow(hueSeed, 3.0));
+
+  vec3 col = vec3(0.015, 0.025, 0.045);
+  float fill = smoothstep(0.7, 0.0, dStable);
+  col += cellTint * fill * 0.22;
+  col += cellTint * mInf * fill * 1.1;
+
+  float border = smoothstep(0.06, 0.0, edge);
+  col += vec3(0.55, 0.95, 1.0) * border * (0.35 + mInf*0.9);
+
+  col += vec3(0.85, 0.95, 1.0) * clickEnergy * 0.6;
+
+  col *= 1.0 - dot(p,p)*0.08;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+</script>
+
+<script>
+// ─── Render config → page ──────────────────────────────────
+function $(sel){ return document.querySelector(sel); }
+function escape(s){
+  return String(s ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+
+function render(c){
+  document.title = c.pageTitle || `${c.name} — Personal Site`;
+  const desc = document.querySelector('meta[name="description"]');
+  if (c.pageDescription) {
+    if (desc) desc.content = c.pageDescription;
+    else {
+      const m = document.createElement('meta');
+      m.name = 'description'; m.content = c.pageDescription;
+      document.head.appendChild(m);
+    }
+  }
+
+  // Header
+  $('#nav-resume').href = c.resumeUrl || '#';
+
+  // Hero
+  $('#hero-name').textContent = c.name || '';
+  $('#hero-headline').textContent = c.headline || '';
+  $('#hero-location').textContent = c.location || '';
+  $('#hero-email').textContent = c.email || '';
+  $('#hero-email').href = c.email ? `mailto:${c.email}` : '#';
+  $('#cta-resume').href   = c.resumeUrl   || '#';
+  $('#cta-linkedin').href = c.linkedinUrl || '#';
+  $('#cta-github').href   = c.githubUrl   || '#';
+
+  // About
+  $('#about-body').innerHTML = (c.about || [])
+    .map(p => `<p>${escape(p).replace(/\n/g, ' ')}</p>`).join('');
+
+  // Skills
+  $('#skills-grid').innerHTML = (c.skills || []).map(s => `
+    <div class="group">${escape(s.group)}</div>
+    <div class="list">${(s.items||[]).map(i => `<span class="chip">${escape(i)}</span>`).join('')}</div>
+  `).join('');
+
+  // Experience
+  $('#experience-body').innerHTML = (c.experience || []).map(e => `
+    <div class="role">
+      <div class="when">${escape(e.when)}</div>
+      <div>
+        <p class="title">${escape(e.title)}</p>
+        <p class="org">${escape(e.org)}</p>
+        <p class="summary">${escape((e.summary||'').replace(/\n/g, ' '))}</p>
+      </div>
+    </div>
+  `).join('');
+  $('#linkedin-more').href = c.linkedinUrl || '#';
+
+  // Projects
+  $('#projects-body').innerHTML = (c.projects || []).map(p => `
+    <a class="proj" href="${escape(p.url)}" target="_blank" rel="noopener">
+      <div class="row">
+        <span class="name">${escape(p.name)}</span>
+        <span class="lang">${escape(p.lang || '')}</span>
+        <span class="arrow">→</span>
+      </div>
+      <p class="desc">${escape(p.desc || '')}</p>
+    </a>
+  `).join('');
+  $('#github-more').href = c.githubUrl || '#';
+
+  // Talks
+  $('#talks-body').innerHTML = (c.talks || []).map(t => `
+    <a class="talk" href="${escape(t.url || '#')}" target="_blank" rel="noopener">
+      <span class="when">${escape(t.when)}</span>
+      <span class="title">${escape(t.title)}</span>
+      <span class="venue">${escape(t.venue || '')}</span>
+    </a>
+  `).join('');
+
+  // Footer
+  $('#footer-left').textContent  = (c.footer && c.footer.left)  || '';
+  $('#footer-right').textContent = (c.footer && c.footer.right) || '';
+
+  $('#top').hidden = false;
+}
+
+function showConfigError(msg){
+  const el = $('#config-error');
+  el.hidden = false;
+  el.innerHTML = `
+    <h2>Config error</h2>
+    <p>${msg}</p>
+    <p>Edit <code>site.yaml</code> to update the page. If you opened this file
+    directly (file://), serve it through a local HTTP server instead:
+    <code>python3 -m http.server</code></p>
+  `;
+}
+
+(async () => {
+  try {
+    const res = await fetch('site.yaml', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`fetch returned ${res.status}`);
+    const text = await res.text();
+    const cfg = jsyaml.load(text);
+    render(cfg);
+  } catch (err) {
+    console.error('Config load failed:', err);
+    showConfigError(escape(err.message || String(err)));
+  }
+})();
+</script>
+
+<script>
+// ─── Voronoi wallpaper ─────────────────────────────────────
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl', { antialias: false });
+if (gl) {
+  function compile(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  const vs = compile(gl.VERTEX_SHADER,   document.getElementById('vs').textContent);
+  const fs = compile(gl.FRAGMENT_SHADER, document.getElementById('fs').textContent);
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs);
+  gl.bindAttribLocation(prog, 0, 'a_pos');
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+  const uRes    = gl.getUniformLocation(prog, 'u_res');
+  const uTime   = gl.getUniformLocation(prog, 'u_time');
+  const uMouse  = gl.getUniformLocation(prog, 'u_mouse');
+  const uClicks = gl.getUniformLocation(prog, 'u_clicks[0]');
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = Math.floor(innerWidth  * dpr);
+    canvas.height = Math.floor(innerHeight * dpr);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  addEventListener('resize', resize); resize();
+
+  const target = { x: 0.5, y: 0.5 };
+  const smooth = { x: 0.5, y: 0.5 };
+  const clicks = new Float32Array(24);
+  for (let i = 0; i < 8; i++) clicks[i*3 + 2] = -1;
+  let head = 0;
+
+  addEventListener('pointermove', (e) => {
+    target.x = e.clientX / innerWidth;
+    target.y = 1 - e.clientY / innerHeight;
+  });
+  addEventListener('pointerdown', (e) => {
+    if (e.target.closest('a, button')) return;
+    clicks[head*3 + 0] = e.clientX / innerWidth;
+    clicks[head*3 + 1] = 1 - e.clientY / innerHeight;
+    clicks[head*3 + 2] = performance.now() / 1000;
+    head = (head + 1) % 8;
+  });
+
+  const t0 = performance.now();
+  function frame(){
+    smooth.x += (target.x - smooth.x) * 0.10;
+    smooth.y += (target.y - smooth.y) * 0.10;
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, (performance.now() - t0) / 1000);
+    gl.uniform2f(uMouse, smooth.x, smooth.y);
+    gl.uniform3fv(uClicks, clicks);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(frame);
+  }
+  frame();
+}
+</script>
+
+</body>
+</html>

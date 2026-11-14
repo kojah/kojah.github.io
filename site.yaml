@@ -1,0 +1,100 @@
+# ─────────────────────────────────────────────────────────────
+#  Personal site config — edit this file to update the page.
+#  All strings support basic line breaks; lists render in order.
+# ─────────────────────────────────────────────────────────────
+
+# Page title (browser tab) and SEO description
+pageTitle: James Ko — Software Engineer
+pageDescription: AI-focused software engineer based in New York, NY.
+
+# Hero ────────────────────────────────────────────────────────
+name: James Ko
+headline: AI-focused software engineer with a passion for system design and DevOps.
+location: New York, NY
+email: jamesqko@gmail.com
+
+# Links ───────────────────────────────────────────────────────
+resumeUrl:   "https://pub-faf0c82124064a6fa9ab3eb67fa1d1fa.r2.dev/resume.pdf"
+linkedinUrl: https://www.linkedin.com/in/jameslko
+githubUrl:   https://github.com/jamesqo
+
+# About — one entry per paragraph ─────────────────────────────
+about:
+  - I architect cloud-native systems that integrate LLMs and agentic AI into production — specializing in distributed infrastructure, system design, and real-time inference pipelines.
+  - I care about systems that are observable, predictable, and pleasant to operate.
+    Most of my work lately has been in Python, Go, and TypeScript on top of
+    Kubernetes and the major clouds.
+
+# Skills ──────────────────────────────────────────────────────
+skills:
+  - group: AI / ML
+    items: [PyTorch, Scikit-Learn, TensorFlow, Pandas/NumPy, Skyvern, OpenRouter, Playwright]
+  - group: Backend
+    items: [Python, TypeScript, JavaScript, SQL, FastAPI, ClickHouse, BigQuery, Airflow, Prefect, SQLite, MySQL, Databricks, CouchDB]
+  - group: Frontend
+    items: [React, Svelte 5, Vite]
+  - group: Infra / DevOps
+    items: [Kubernetes, Docker, AWS, GCP, ArgoCD, GitHub Actions, OpenTelemetry, Jaeger, nginx]
+
+# Experience ──────────────────────────────────────────────────
+experience:
+  - when: Jun 2023 — Present
+    title: Bioinformatics Engineer
+    org: Memorial Sloan Kettering
+    summary: >
+      Migrated cBioPortal from MySQL to ClickHouse, cutting query times and RDS costs.
+      Built blue-green deployments, moved storage to S3/Databricks, and shifted imports
+      from Cron to Airflow. Engineered BigQuery-to-cBioPortal ETL pipelines for the
+      National Cancer Institute. Managed Kubernetes via ArgoCD and designed HIPAA-compliant
+      API proxies.
+
+  - when: Oct 2022 — Jun 2023
+    title: Software Engineer
+    org: Massachusetts General Hospital
+    summary: >
+      Managed clinical and imaging data ingestion for biomarker studies (DISCOVERY,
+      MarkVCID). Used CouchDB for storage and Cron for automation. Enhanced data
+      integrity checks, generated enrollment reports, and anonymized data for
+      HIPAA-compliant distribution.
+
+  - when: May 2021 — May 2022
+    title: Research Intern
+    org: Boston Children's Hospital
+    summary: >
+      Built PyTorch models for Harvard Medical School to predict neurological biomarkers
+      (Alzheimer's, schizophrenia). Ran CNN experiments to address data imbalance.
+      Co-authored a paper submitted to NeuroImage.
+
+# Projects ────────────────────────────────────────────────────
+projects:
+  - name: Hermes Agent
+    lang: Python
+    url: https://github.com/jamesqo
+    desc: Persistent AI assistant with multi-platform gateway (Discord, Telegram), cloud browser execution, workflow orchestration, and 15+ cron-scheduled autonomous agents.
+
+  - name: El Dorado
+    lang: Python · Svelte
+    url: https://github.com/jamesqo
+    desc: Autonomous job application pipeline using multi-agent LLM orchestration, self-healing diagnostics via GitHub Actions, and a FastAPI + Svelte 5 dashboard.
+
+  - name: chess-bot
+    lang: C#
+    url: https://github.com/jamesqo/chess-bot
+    desc: UCI-compliant chess engine featuring MTD-f search, iterative deepening, magic bitboards, transposition tables, and quiescence search.
+
+# Talks & writing ─────────────────────────────────────────────
+talks:
+  - when: May 2026
+    title: Hermes Agent — Enhancing AI Agents with Context
+    venue: CDSI Lunch & Learn
+    url: https://www.slideshare.net/slideshow/hermes-agent-a-context-enhanced-ai-personal-assistant/287829731
+
+  - when: May 2026
+    title: Transitioning cBioPortal to ClickHouse — Deployment, Migration, and Future Enhancements
+    venue: cBioPortal Community Call
+    url: https://www.slideshare.net/slideshow/transitioning-cbioportal-to-clickhouse-deployment-migration-and-future-enhancements/287861740
+
+# Footer ──────────────────────────────────────────────────────
+footer:
+  left: © 2026 James Ko
+  right: New York · NY
