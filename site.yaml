@@ -76,7 +76,7 @@ projects:
   - name: gohawk
     lang: Go
     url: https://gohawk.dev
-    desc: Static analyzer for Go concurrency and resource bugs, with 165 GitHub stars. SSA-based, with compositional function summaries; analyzes all of Kubernetes (about 1,600 packages) in 76 seconds. Its findings led to 13 merged fixes in 11 open-source projects, including Docker, Kubernetes, and Caddy.
+    desc: Static analyzer for Go concurrency and resource bugs, with 165 GitHub stars. SSA-based, with compositional function summaries; analyzes all of Kubernetes (about 1,600 packages) in 76 seconds. Across 500 scanned repositories, 246 of 248 reviewed findings were real problems, and they led to 13 merged fixes in 11 open-source projects, including Docker, Kubernetes, and Caddy.
 
   - name: Mash
     lang: Rust
