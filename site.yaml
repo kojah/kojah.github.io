@@ -32,7 +32,7 @@ skills:
   - group: Languages
     items: [Rust, Go, Python, TypeScript, Swift, "C#", SQL]
   - group: AI Agents & Retrieval
-    items: [MCP servers, LLM integration, Semantic embeddings, Hybrid retrieval, Cross-encoder reranking, Qdrant]
+    items: [MCP servers, LLM integration, Semantic embeddings, Hybrid retrieval, Cross-encoder reranking, Qdrant, ONNX Runtime]
   - group: Systems & Data
     items: [Tokio/Axum, gRPC/Protobuf, WebSockets, SQLite, ClickHouse, BigQuery, Airflow]
   - group: Infrastructure
@@ -81,7 +81,7 @@ projects:
   - name: Mash
     lang: Rust
     url: https://getmash.io
-    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with 26 bounded TLA+ models. Its Raycast extension answers each keystroke in under 100 ms over about 400,000 messages on a laptop. My own deployment indexes 4,500+ chats across four machines.
+    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with 26 bounded TLA+ models. Models run through ONNX Runtime on Core ML, DirectML and CUDA; on an NVIDIA T4, embedding ran about 9× faster than the CPU. Its Raycast extension answers each keystroke in under 100 ms over about 400,000 messages on a laptop. My own deployment indexes 4,500+ chats across four machines.
 
 
 # Education ───────────────────────────────────────────────────
