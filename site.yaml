@@ -47,8 +47,9 @@ experience:
     org: Memorial Sloan Kettering
     summary: >
       Migrated cBioPortal from MySQL to ClickHouse with blue-green deployments that
-      keep the site available during imports. Built a Go microservice that streams
-      study data from the NCI Secure Data Enclave. Moved imports from Cron to Airflow
+      keep the site available during imports. Designed a federated backend: a Go proxy
+      that streams NCI Secure Data Enclave studies in parallel batches while
+      patient-level data stays inside NCI. Moved imports from Cron to Airflow
       on Docker and Kubernetes, managed through ArgoCD, and storage to S3 and
       Databricks. Engineered BigQuery ETL pipelines for the National Cancer Institute.
       Run Hermes Agent, a persistent AI assistant with Slack, Discord, and Telegram
