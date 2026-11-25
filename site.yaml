@@ -32,9 +32,9 @@ skills:
   - group: Languages
     items: [Rust, Go, Python, TypeScript, Swift, "C#", SQL]
   - group: AI Agents & Retrieval
-    items: [Agent workflows, Containerized agents, Hermes Agent, Semantic embeddings, Hybrid retrieval, Cross-encoder reranking, Qdrant]
+    items: [MCP servers, LLM integration, Semantic embeddings, Hybrid retrieval, Cross-encoder reranking, Qdrant]
   - group: Systems & Data
-    items: [Distributed systems, Tokio/Axum, gRPC/Protobuf, SQLite, ClickHouse, BigQuery, Airflow]
+    items: [Tokio/Axum, gRPC/Protobuf, WebSockets, SQLite, ClickHouse, BigQuery, Airflow]
   - group: Infrastructure
     items: [Kubernetes, Karpenter, Docker, ArgoCD, Ansible, AWS]
   - group: Analysis & Verification
@@ -73,15 +73,15 @@ experience:
 
 # Projects ────────────────────────────────────────────────────
 projects:
-  - name: Mash
-    lang: Rust
-    url: https://getmash.io
-    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with TLA+ models.
-
   - name: gohawk
     lang: Go
     url: https://gohawk.dev
-    desc: Static analyzer for Go concurrency and resource bugs. SSA-based, with compositional function summaries; analyzes all of Kubernetes in 76 seconds and has found bugs fixed upstream in Docker, Kubernetes, and Caddy.
+    desc: Static analyzer for Go concurrency and resource bugs, with 165 GitHub stars. SSA-based, with compositional function summaries; analyzes all of Kubernetes (about 1,600 packages) in 76 seconds. Its findings led to 13 merged fixes in 11 open-source projects, including Docker, Kubernetes, and Caddy.
+
+  - name: Mash
+    lang: Rust
+    url: https://getmash.io
+    desc: Searchable memory for coding agents. A CLI and MCP server that retrieve prior conversations across six agent tools, with hybrid retrieval on Qdrant, a memory layer that cites its sources, and replication verified with 26 bounded TLA+ models. My own deployment indexes 4,500+ chats across four machines.
 
 
 # Education ───────────────────────────────────────────────────
@@ -93,6 +93,11 @@ education:
 
 # Talks & writing ─────────────────────────────────────────────
 talks:
+  - when: Nov 2026
+    title: gohawk, with live demos of the leaks and deadlocks it catches
+    venue: GolangNYC
+    url: https://gohawk.dev
+
   - when: May 2026
     title: Hermes Agent — Enhancing AI Agents with Context
     venue: CDSI Lunch & Learn
