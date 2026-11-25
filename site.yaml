@@ -22,7 +22,7 @@ githubUrl:   https://github.com/kojah
 about:
   - I build the systems around AI agents — memory, retrieval, and the infrastructure
     that runs them. Lately that means Mash, a searchable memory for coding agents,
-    and gohawk, a static analyzer for Go concurrency and resource bugs.
+    and Gohawk, a static analyzer for Go concurrency and resource bugs.
   - At Memorial Sloan Kettering I work on cBioPortal's data platform. I care about
     systems that are observable, predictable, and verified. Most of my work lately
     has been in Rust, Go, Python, and TypeScript on top of Kubernetes and AWS.
@@ -73,7 +73,7 @@ experience:
 
 # Projects ────────────────────────────────────────────────────
 projects:
-  - name: gohawk
+  - name: Gohawk
     lang: Go
     url: https://gohawk.dev
     desc: Static analyzer for Go concurrency and resource bugs, with 165 GitHub stars. SSA-based, with compositional function summaries; analyzes all of Kubernetes (about 1,600 packages) in 76 seconds. Across 500 scanned repositories, 246 of 248 reviewed findings were real problems, and they led to 13 merged fixes in 11 open-source projects, including Docker, Kubernetes, and Caddy.
