@@ -36,7 +36,7 @@ skills:
   - group: Systems & Data
     items: [Tokio/Axum, gRPC/Protobuf, WebSockets, SQLite, ClickHouse, BigQuery, Airflow]
   - group: Infrastructure
-    items: [Kubernetes, Karpenter, Docker, ArgoCD, Ansible, AWS]
+    items: [Kubernetes (EKS), Karpenter, Terraform, Docker, ArgoCD, Ansible, AWS]
   - group: Analysis & Verification
     items: [SSA-based static analysis, TLA+/PlusCal, Property-based testing]
 
@@ -47,14 +47,15 @@ experience:
     org: Memorial Sloan Kettering
     summary: >
       Migrated cBioPortal from MySQL to ClickHouse with blue-green deployments that
-      keep the site available during imports. To protect patient privacy and decouple study
-      data from its database representation, designed a federated backend: a Go proxy
-      that streams NCI Secure Data Enclave studies in parallel batches, so the portal
-      shows them without importing them and patient-level data never leaves NCI. Moved imports from Cron to Airflow
-      on Docker and Kubernetes, managed through ArgoCD, and storage to S3 and
-      Databricks. Engineered BigQuery ETL pipelines for the National Cancer Institute.
-      Run Hermes Agent, a persistent AI assistant with Slack, Discord, and Telegram
-      gateways, on Kubernetes with Karpenter and EC2 Spot.
+      keep the site available during imports. To protect patient privacy and decouple
+      study data from its database representation, designed a federated backend: a Go
+      proxy that streams NCI Secure Data Enclave studies in parallel batches, so the
+      portal shows them without importing them and patient-level data never leaves NCI.
+      Manage cBioPortal's AWS EKS clusters: set up Karpenter autoscaling NodePools on
+      EC2 Spot, and maintain Terraform node groups and ArgoCD GitOps deployments. Moved
+      imports from Cron to Airflow and storage to S3 and Databricks. Engineered BigQuery
+      ETL pipelines for the National Cancer Institute. Run Hermes Agent, a persistent AI
+      assistant with Slack, Discord, and Telegram gateways, for under $0.50 a day.
 
   - when: Oct 2022 — Jun 2023
     title: Software Engineer
